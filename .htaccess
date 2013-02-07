@@ -1,0 +1,14 @@
+Options +ExecCGI
+AddType application/x-httpd-cgi .cgi
+AddType text/x-component .htc
+DirectoryIndex index.cgi
+RewriteEngine on
+RewriteRule ^index.cgi/([\w/]+)\.(\w+)$ public/$1.$2 [L]
+<Files ~ "index.cgi.conf">
+    Order allow,deny
+    Deny from all  
+</Files>
+<Files ~ "twitter_keys.yaml">
+    Order allow,deny
+    Deny from all  
+</Files>
