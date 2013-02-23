@@ -150,7 +150,8 @@ get '/list' => sub {
       epoch     => str2time( $item->{created_at} ),
     );
     # Twitter APIのJSON出力に似せた構造体を作る
-    unshift @$res2, {
+    # 55%（gzip後）にまで通信データが縮まります。
+    push @$res2, {
       id          => $item->{id} + 0,
       id_str      => qq($item->{id}),
       created_at  => DateTime::Format::HTTP->format_datetime( $dt ),
@@ -164,7 +165,8 @@ get '/list' => sub {
   }
   $self->render( json => { http_message => $nt->http_message, 
                            status       => $nt->http_code,
-                           res          => $res, } );
+                         # res          => $res, } ); # デバッグ用：全データ送信
+                           res          => $res2, } ); # 必要データのみ送信
 };
 
 # delete処理（application/json）

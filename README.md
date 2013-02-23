@@ -29,5 +29,6 @@ botとして動かすため設置者が書き換える必要があるファイ�
 
 ##changes
 
+* ver 0.0.3 Minimize AJAX Data Traffic
 * ver 0.0.2 HTML5 Valid / Change xFolk to hAtom / Modify Templates
 * ver 0.0.1 first import
