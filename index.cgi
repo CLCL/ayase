@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 
 use 5.010; # Mojolicious 1.9.8以降はPerl 5.10対応
-use version; our $VERSION = qv('0.0.1');
+use version; our $VERSION = qv('0.0.2');
 use Mojolicious::Lite;
 use utf8;
 use Imager; # Image::Magickはオンメモリの画像操作が出来ない
@@ -248,12 +248,13 @@ app->start;
 __DATA__
 
 @@ index.html.ep
-% layout 'default',  title => 'あやせは450円', description => 'あやせは450円のメインページ';
+% layout 'default',  title => '女子中学生にTwitterで罵ってもらえるサイト', description => 'あやせは450円のメインページ';
   
-        <section class="xfolkentry">
-          <h2>ラブリーマイエンジェルあやせたん（円／ドル相場Webアプリです）</h2>
+        <section class="hentry">
+          <h2 class="entry-title">ラブリーマイエンジェルあやせたん（円／ドル相場Webアプリです）</h2>
           <p>
-            <img id="buy" src="<%= url_for '/ayaseimg' %>" style="width: auto; max-width: 100%;" />
+            <img id="buy" src="<%= url_for '/ayaseimg' %>"
+              alt="character_image" style="width: auto; max-width: 100%;" />
           </p>
 
           <form class="fukidashi" id="message" name="message"
@@ -274,8 +275,8 @@ __DATA__
 
         </section>
 
-        <section class="xfolkentry howto">
-          <h2>あそびかた（Twitterで罵ってもらえるWebサイトです）</h2>
+        <section class="hentry howto">
+          <h2 class="entry-title">あそびかた（Twitterで罵ってもらえるWebサイトです）</h2>
           <ol>
             <li>値段を確認します。</li>
             <li>画像をクリック（購入）します。※実際に購入はできません</li>
@@ -422,79 +423,79 @@ __DATA__
         });
         % end
     
-        %= stylesheet begin
-        #buy {
-          -webkit-transition: all 0.2s ease;
-          transition: all 0.2s ease;
-        }
-        #buy.notouchdev:hover, #buy.hover {
-          opacity: 0.5;
-          cursor: pointer;
-        }
-        .fukidashi {
-          margin-top: 12px;
-          position: relative;
-          border: 3px solid #f8a;
-          text-align: left;
-          border-radius: 8px;
-          max-width: 360px;
-          padding: 8px;
-          background-color: white;
-          opacity: 0.8;
-          text-shadow: 1px 1px 3px #ddd;
-        }
-        .fukidashi:after, .fukidashi:before {
-          content: "";
-          position: absolute;
-          top: 100%;
-          height: 0;
-          width: 0;
-        }
-        .fukidashi:after {
-          left: 33px;
-          top: -22px;
-          border: 11px solid transparent;
-          border-bottom: 11px solid #fff;
-        }
-        .fukidashi:before {
-          left: 30px;
-          top: -29px;
-          border: 14px solid transparent;
-          border-bottom: 14px solid #f8a;
-        }
-        .howto ol {
-          padding-left: 2em;
-          margin--left: 2em;
-    
-        }
-        .howto ol li {
-          list-style-type: decimal;
-          margin--left: 2em;
-          padding: 2px;
-        }
-        li.cursor {
-          margin-top: 6px;
-          margin-bottom: 6px;
-        }
-        li span {
-          border: 2px solid transparent;
-          border-radius: 4px;
-          padding: 2px;
-          color: #522;
-          text-shadow: 1px 1px 3px #ddd;
-          -webkit-transition: all 0.6s ease;
-          transition: all 0.6s ease;
-        }
-        li.cursor span {
-          border: 2px solid red;
-        }
-        %= end
+    % content_for stylesheet => begin
+    #buy {
+      -webkit-transition: all 0.2s ease;
+      transition: all 0.2s ease;
+    }
+    #buy.notouchdev:hover, #buy.hover {
+      opacity: 0.5;
+      cursor: pointer;
+    }
+    .fukidashi {
+      margin-top: 12px;
+      position: relative;
+      border: 3px solid #f8a;
+      text-align: left;
+      border-radius: 8px;
+      max-width: 360px;
+      padding: 8px;
+      background-color: white;
+      opacity: 0.8;
+      text-shadow: 1px 1px 3px #ddd;
+    }
+    .fukidashi:after, .fukidashi:before {
+      content: "";
+      position: absolute;
+      top: 100%;
+      height: 0;
+      width: 0;
+    }
+    .fukidashi:after {
+      left: 33px;
+      top: -22px;
+      border: 11px solid transparent;
+      border-bottom: 11px solid #fff;
+    }
+    .fukidashi:before {
+      left: 30px;
+      top: -29px;
+      border: 14px solid transparent;
+      border-bottom: 14px solid #f8a;
+    }
+    .howto ol {
+      padding-left: 2em;
+      margin--left: 2em;
+
+    }
+    .howto ol li {
+      list-style-type: decimal;
+      margin--left: 2em;
+      padding: 2px;
+    }
+    li.cursor {
+      margin-top: 6px;
+      margin-bottom: 6px;
+    }
+    li span {
+      border: 2px solid transparent;
+      border-radius: 4px;
+      padding: 2px;
+      color: #522;
+      text-shadow: 1px 1px 3px #ddd;
+      -webkit-transition: all 0.6s ease;
+      transition: all 0.6s ease;
+    }
+    li.cursor span {
+      border: 2px solid red;
+    }
+    % end
 
 @@ edit.html.ep
 % layout 'default', title => 'Edit - あやせ450円', description => 'あやせ450円の発言編集（削除）ページ';
 
-        <section class="xfolkentry">
-          <h2>Twitterでの発言</h2>
+        <section class="hentry">
+          <h2 class="entry-title">Twitterでの発言</h2>
           <p>発言してはいけない人に向かって罵倒してしまったときのため、削除が出来ます。発言を選んで、削除ボタンを押してください。</p>
           <label for="none" id="notselected" style="z-index: 0;">
           </label>
@@ -595,111 +596,113 @@ __DATA__
           } 
         });
         % end
-
-        %=stylesheet begin
-        #notselected {
-          display: block;
-          height: 100%;
-          left: 0;
-          position: absolute;
-          top: 0;
-          width: 100%;
-        }
-        #tweetlist {
-          background-color: white;
-          border-bottom: 0px;
-        }
-        #tweetlist li {
-          border-bottom: 1px solid #ddd;
-          margin: 0px 0px;
-          position: relative;
-          -webkit-transition: all 0.2s ease;
-          transition: all 0.2s ease;
-        }
-        #tweetlist li.notouchdev:hover, #tweetlist li.hover {
-          background-color: #f3f3f3;
-        }
-        #tweetlist li.checked{
-          background-color: #fdb;
-        }
-        #tweetlist li.checked.notouchdev:hover, #tweetlist li.hover {
-          background-color: #fcc;
-        }
-        #tweetlist label {
-          display: block;
-        }
-        #tweetlist.noie input.radiobutton {
-          display: none;
-        }
-        #tweetlist p {
-          line-height: 1.4;
-          margin-top: 0px;
-          margin-bottom: 0px;
-        }
-        #tweetlist .showname {
-          margin-top: 0px;
-          padding-top: 8px;
-        }
-        #tweetlist .username {
-          font-weight: bold;
-          color: #222;
-        }
-        #tweetlist .screenname {
-          font-size: 85%;
-          color: #aaa;
-        }
-        #tweetlist img {
-          position: absolute;
-          top: 12px;
-          left: 12px;
-        }
-        #tweetlist li .content {
-          padding-left: 72px;
-          padding-right: 8px;
-        }
-        #tweetlist .datetime {
-          padding-bottom: 8px;
-        }
-        #tweetlist time {
-          font-size: 85%;
-          color: #aaa;
-        }
-        #tweetlist input[type=submit] {
-          display: none;
-          -webkit-transition: all 0.2s ease;
-          transition: all 0.2s ease;
-          position: absolute;
-          top: 8%;
-          right: 1%;
-        }
-        #tweetlist .checked input[type=submit] {
-          display: inline;
-        }
-        %= end
+        
+    % content_for stylesheet => begin
+    #notselected {
+      display: block;
+      height: 100%;
+      left: 0;
+      position: absolute;
+      top: 0;
+      width: 100%;
+    }
+    #tweetlist {
+      background-color: white;
+      border-bottom: 0px;
+    }
+    #tweetlist li {
+      border-bottom: 1px solid #ddd;
+      margin: 0px 0px;
+      position: relative;
+      -webkit-transition: all 0.2s ease;
+      transition: all 0.2s ease;
+    }
+    #tweetlist li.notouchdev:hover, #tweetlist li.hover {
+      background-color: #f3f3f3;
+    }
+    #tweetlist li.checked{
+      background-color: #fdb;
+    }
+    #tweetlist li.checked.notouchdev:hover, #tweetlist li.hover {
+      background-color: #fcc;
+    }
+    #tweetlist label {
+      display: block;
+    }
+    #tweetlist.noie input.radiobutton {
+      display: none;
+    }
+    #tweetlist p {
+      line-height: 1.4;
+      margin-top: 0px;
+      margin-bottom: 0px;
+    }
+    #tweetlist .showname {
+      margin-top: 0px;
+      padding-top: 8px;
+    }
+    #tweetlist .username {
+      font-weight: bold;
+      color: #222;
+    }
+    #tweetlist .screenname {
+      font-size: 85%;
+      color: #aaa;
+    }
+    #tweetlist img {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+    }
+    #tweetlist li .content {
+      padding-left: 72px;
+      padding-right: 8px;
+    }
+    #tweetlist .datetime {
+      padding-bottom: 8px;
+    }
+    #tweetlist time {
+      font-size: 85%;
+      color: #aaa;
+    }
+    #tweetlist input[type=submit] {
+      display: none;
+      -webkit-transition: all 0.2s ease;
+      transition: all 0.2s ease;
+      position: absolute;
+      top: 8%;
+      right: 1%;
+    }
+    #tweetlist .checked input[type=submit] {
+      display: inline;
+    }
+    %= end
 
 @@ development.html.ep
 % layout 'default', title => 'Development - あやせ450円', description => 'あやせ450円の開発ページ';
 
-        <section class="xfolkentry">
-          <h2>GitHub</h2>
+        <section class="hentry">
+          <h2 class="entry-title">GitHub</h2>
           <p><a href="https://github.com/CLCL/ayase" target="_blank">https://github.com/CLCL/ayase</a></p>
         </section>
-        <section class="xfolkentry">
-          <h2>元ネタ</h2>
+        <section class="hentry">
+          <h2 class="entry-title">元ネタ</h2>
           <p>
             俺の妹がこんなに可愛いわけがないiP<br />
             http://www.bandainamcogames.co.jp/mobile/app.php?id=807
           </p>
           <p>
-            <img src="<%= url_for '/images/ayase-original.jpg' %>" style="width: auto; max-width: 100%;" />
+            <img src="<%= url_for '/images/ayase-original.jpg' %>"
+              alt="original_image" style="width: auto; max-width: 100%;" />
           </p>
         </section>
 
 @@ layouts/default.html.ep
 <!DOCTYPE html> 
 <html lang="ja">
-  <head profile="http://microformats.org/profile/xfolk">
-  <%= include 'head_common.inc' %>
+
+  <head>
+    <%= include 'head_common.inc' =%>
   </head>
 
   <body class="<%= current_route %>">
@@ -707,7 +710,7 @@ __DATA__
       <header id="hd"><!-- header -->
         <%= include 'header.inc' %>
       </header>   
-      <div id="bd"><!-- body -->
+      <div id="bd" class="hfeed"><!-- body -->
         <%= content %>
       </div> 
       <footer>
@@ -720,7 +723,6 @@ __DATA__
 </html>
 
 @@ head_common.inc.html.ep
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta charset="UTF-8" />
     <title><%= $title %></title>
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
@@ -734,12 +736,10 @@ __DATA__
     <meta property="og:locale" content="ja_JP" />
     <meta property="og:site_name" content="<%= $title %>" />
     <meta property="og:description" content="<%= $description %>" />
-    %# stylesheet 'http://yui.yahooapis.com/2.8.0r4/build/reset-fonts-grids/reset-fonts-grids.css'
-    %= stylesheet 'http://yui.yahooapis.com/3.8.1/build/cssreset/cssreset-min.css'
-    %= stylesheet 'http://yui.yahooapis.com/3.8.1/build/cssfonts/cssfonts-min.css'
-    <style>
-    %= include 'styles.css'
-    </style>
+    <%= include 'styles.css' =%>
+    %= stylesheet begin
+    <%= content_for 'stylesheet' =%>
+    %= end
     %= javascript '/js/jquery.js'
     <!--[if lt IE 9]>
     %= javascript 'http://ie7-js.googlecode.com/svn/version/2.1(beta4)/IE9.js'
@@ -795,26 +795,32 @@ __DATA__
         });   
           
 @@ styles.css.html.ep
-%# Yahoo UI Font Size
-%# px  %
-%# -----------
-%# 10   77
-%# 11   85
-%# 12   93
-%# 13  100
-%# 14  108
-%# 15  116
-%# 16  123.1
-%# 17  131
-%# 18  138.5
-%# 19  146.5
-%# 20  153.9
-%# 21  161.6
-%# 22  167
-%# 23  174
-%# 24  182
-%# 25  189
-%# 26  197
+    %# Yahoo UI Font Size
+    %# ----------------
+    %# |  px  |   %   |
+    %# |--------------|
+    %# |  10  |  77   |
+    %# |  11  |  85   |
+    %# |  12  |  93   |
+    %# |  13  | 100   |
+    %# |  14  | 108   |
+    %# |  15  | 116   |
+    %# |  16  | 123.1 |
+    %# |  17  | 131   |
+    %# |  18  | 138.5 |
+    %# |  19  | 146.5 |
+    %# |  20  | 153.9 |
+    %# |  21  | 161.6 |
+    %# |  22  | 167   |
+    %# |  23  | 174   |
+    %# |  24  | 182   |
+    %# |  25  | 189   |
+    %# |  26  | 197   |
+    %# ----------------
+    %#
+    %= stylesheet 'http://yui.yahooapis.com/3.8.1/build/cssreset/cssreset-min.css'
+    %= stylesheet 'http://yui.yahooapis.com/3.8.1/build/cssfonts/cssfonts-min.css'
+    %= stylesheet begin
     /* styles.css.html.ep 共通CSS */
     html {
       background-image: url(<%= url_for '/images/bg.jpg' %>);
@@ -914,3 +920,4 @@ __DATA__
       text-decoration: underline;
       color: #999;
     }
+    %= end
