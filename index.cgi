@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 
 use 5.010; # Mojolicious 1.9.8以降はPerl 5.10対応
-use version; our $VERSION = qv('0.0.2');
+use version; our $VERSION = qv('0.0.3');
 use Mojolicious::Lite;
 use utf8;
 use Imager; # Image::Magickはオンメモリの画像操作が出来ない
