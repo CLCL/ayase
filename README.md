@@ -10,6 +10,7 @@ Mojolicious::Liteにおける標準的な手法を模索しています。
 * Mojolicious組み込みのUserAgentでWebコンテンツ取得
 * メモリ内データの画像としての出力（$self->render_data( $bin,  format => 'jpeg');）
 * AJAX通信用JSON生成（GET/POST）
+* Mojo::Utilのslurpによるファイル一気読み
 
 ##files
 
@@ -29,6 +30,7 @@ botとして動かすため設置者が書き換える必要があるファイ�
 
 ##changes
 
+* ver 0.0.4 use Mojolicious 3.83 or later / Relative Time Description
 * ver 0.0.3 Minimize AJAX Data Traffic
 * ver 0.0.2 HTML5 Valid / Change xFolk to hAtom / Modify Templates
 * ver 0.0.1 first import

@@ -1,9 +1,11 @@
 #!/usr/bin/perl
 
 use 5.010; # Mojolicious 1.9.8以降はPerl 5.10対応
-use version; our $VERSION = qv('0.0.3');
+use version; our $VERSION = qv('0.0.4');
+use Mojolicious 3.83; # Mojolicious 3.83でjquery.jsの置き場所が変わった
 use Mojolicious::Lite;
-use utf8;
+use Mojo::Util qw(slurp);
+#use utf8; # Mojolicious 3.69で、utf8があらかじめ指定されるようになった
 use Imager; # Image::Magickはオンメモリの画像操作が出来ない
 use JSON -support_by_pp; # Mojo::JSONはGoogleのJSONはParseできない
 use Net::Twitter 4.0000001; # Twitter API version 1.1対応版
@@ -69,8 +71,9 @@ get '/' => sub {
     $self->session( csrftoken => $csrftoken );
   }
   # テンプレートに可変値を渡す
-  $self->stash( screenname => $screenname );
-  $self->stash( csrftoken  => $csrftoken  );
+  $self->stash( screenname => $screenname,
+                csrftoken  => $csrftoken,
+  );
 } => 'index';
 
 # 発言編集ページ
@@ -84,7 +87,7 @@ get '/edit' => sub {
     $self->session( csrftoken => $csrftoken );
   }
   # テンプレートに可変値を渡す
-  $self->stash( csrftoken  => $csrftoken  );
+  $self->stash( csrftoken  => $csrftoken );
 }=> 'edit';
 
 # 開発ページ（ペラページ）
@@ -155,6 +158,7 @@ get '/list' => sub {
       id          => $item->{id} + 0,
       id_str      => qq($item->{id}),
       created_at  => DateTime::Format::HTTP->format_datetime( $dt ),
+      datetime    => "$dt",
       text        => $item->{text},
       in_reply_to_screen_name => $item->{in_reply_to_screen_name},
       user => { screen_name => $item->{user}->{screen_name},
@@ -207,14 +211,9 @@ post '/tweet' => sub {
   }
 
   # Twitter NGリストを読み込み
-  my $nglist;
-  {
-    open my $fh, '<', app->home->rel_file('/public/ng.json');
-    $nglist = decode_json( do { local $/; <$fh> } );
-    close $fh;
-    # NG ID検索のためスモールキャピタルに正規化
-    map { $nglist->{lc($_)} = $nglist->{$_} } keys %$nglist;
-  }
+  my $nglist = decode_json( slurp( app->home->rel_file('/public/ng.json') ) );
+  # NG ID検索のためスモールキャピタルに正規化
+  map { $nglist->{lc($_)} = $nglist->{$_} } keys %$nglist;
   # 送信先screen_name(to)がNGリストにあるかチェック
   ( my $to_lc = lc($to) ) =~ s/^@//;
   if ( exists $nglist->{$to_lc} ) {
@@ -223,12 +222,7 @@ post '/tweet' => sub {
   }
 
   # キャラクターのメッセージを読み込み
-  my $messages; 
-  {
-    open my $fh, '<', app->home->rel_file('/public/ayase.json');
-    $messages = decode_json( do { local $/; <$fh> } );
-    close $fh;
-  }
+  my $messages = decode_json( slurp( app->home->rel_file('/public/ayase.json') ) );
   my $dic;
   foreach my $item ( @$messages ) {
     $dic->{$item->{id}} = $item->{text};
@@ -541,8 +535,11 @@ __DATA__
               + '    </p>'
               + '    <p><span class="text">' + f.text + '</span></p>'
               + '    <p class="datetime"><a target="_blank" href="https://twitter.com/'
-              + f.user.screen_name+'/status/'+ f.id_str +'"><time>'
-              + f.created_at + '</time></a></p>'
+              + f.user.screen_name+'/status/'+ f.id_str +'"><time'
+              + ' datetime="' + f.datetime
+              + '" title="' + f.created_at
+              + '">' + relativeTime(f.datetime)
+              + '</time></a></p>'
               + '    <input class="radiobutton" name="id" type="radio" value="'
               + f.id_str + '" id="r_' + f.id_str + '" />'
               + '    <input type="submit" name="submit" value="削除" />'
@@ -596,7 +593,38 @@ __DATA__
           if (navigator.userAgent.indexOf('MSIE') == -1) {
             $('#tweetlist').addClass('noie');
           } 
+          // 6. 時刻を相対表記に動的書き換え
+          var rewriteTime = function() {
+            $('li.notouchdev time').each(
+              function() {
+                var str = relativeTime( $(this).attr('datetime') );
+                $(this).text(str)
+              }
+            );
+            setTimeout( rewriteTime, 15000);
+            return;
+          };
+          rewriteTime();
         });
+
+        // 共用関数
+        function relativeTime(s) {
+          var n = new Date();
+          var temp = s.split('T');
+          if (typeof temp[1] == "undefined" ) temp[1] = "00:00:00";
+          var sDate = temp[0].split('-');
+          var sTime = temp[1].split(':');
+          var t = new Date( sDate[0], sDate[1]-1, sDate[2],
+                        sTime[0], sTime[1],   sTime[2]);
+          var d = ( n - t );
+          if      ( ( d /= 1000 ) < 60 ) { s = Math.floor(d)+'秒';}
+          else if ( ( d /= 60   ) < 60 ) { s = Math.floor(d)+'分';}
+          else if ( ( d /= 60   ) < 24 ) { s = Math.floor(d)+'時間';}
+          else {
+            s = ( t.getMonth() + 1 ) + '月' + t.getDate() +'日';
+          }
+          return s;
+        }
         % end
         
     % content_for stylesheet => begin
@@ -742,7 +770,7 @@ __DATA__
     %= stylesheet begin
     <%= content_for 'stylesheet' =%>
     %= end
-    %= javascript '/js/jquery.js'
+    %= javascript '/mojo/jquery/jquery.js'
     <!--[if lt IE 9]>
     %= javascript 'http://ie7-js.googlecode.com/svn/version/2.1(beta4)/IE9.js'
     %= javascript '/js/html5shiv.js'
