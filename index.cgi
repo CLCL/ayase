@@ -1,11 +1,10 @@
 #!/usr/bin/perl
 
 use 5.010; # Mojolicious 1.9.8以降はPerl 5.10対応
-use version; our $VERSION = qv('0.0.4');
-use Mojolicious 3.83; # Mojolicious 3.83でjquery.jsの置き場所が変わった
+use version; our $VERSION = qv('0.0.5');
+use Mojolicious 4.00; # Mojolicious 4.00で$c->render_data($a)が$c->render(data=>$a)になった
 use Mojolicious::Lite;
 use Mojo::Util qw(slurp);
-#use utf8; # Mojolicious 3.69で、utf8があらかじめ指定されるようになった
 use Imager; # Image::Magickはオンメモリの画像操作が出来ない
 use JSON -support_by_pp; # Mojo::JSONはGoogleのJSONはParseできない
 use Net::Twitter 4.0000001; # Twitter API version 1.1対応版
@@ -136,7 +135,7 @@ get '/ayaseimg' => sub {
   $img->write( data => \$bin, type => 'jpeg' ) or die $img->errstr();
 
   # JPEG画像としてメモリから画像を出力
-  $self->render_data( $bin,  format => 'jpeg');
+  $self->render( data => $bin, format => 'jpeg');
 };
 
 # list処理（application/json）
